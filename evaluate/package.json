@@ -5,14 +5,15 @@
   "author": "zjh <zoujunhui@bilibili.co>",
   "private": true,
   "scripts": {
-    "dev": "webpack-dev-server --host 0.0.0.0 --inline --progress --config build/webpack.dev.conf.js",
+    "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "start": "npm run dev",
     "build": "node build/build.js"
   },
   "dependencies": {
+    "ajv-keywords": "^3.5.2",
     "axios": "^0.21.1",
     "element-ui": "^2.15.2",
-    "vue": "^2.5.2",
+    "vue": "^2.6.14",
     "vue-axios": "^3.2.4",
     "vue-router": "^3.0.1"
   },
@@ -33,6 +34,8 @@
     "file-loader": "^1.1.4",
     "friendly-errors-webpack-plugin": "^1.6.1",
     "html-webpack-plugin": "^2.30.1",
+    "less": "^4.1.1",
+    "less-loader": "^5.0.0",
     "node-notifier": "^5.1.2",
     "optimize-css-assets-webpack-plugin": "^3.2.0",
     "ora": "^1.2.0",
@@ -47,7 +50,7 @@
     "url-loader": "^0.5.8",
     "vue-loader": "^13.3.0",
     "vue-style-loader": "^3.0.1",
-    "vue-template-compiler": "^2.5.2",
+    "vue-template-compiler": "^2.6.14",
     "webpack": "^3.6.0",
     "webpack-bundle-analyzer": "^2.9.0",
     "webpack-dev-server": "^2.9.1",
