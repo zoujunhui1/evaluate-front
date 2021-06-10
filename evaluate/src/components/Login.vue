@@ -6,18 +6,18 @@
         <img src="../assets/logo.png" alt="">
       </div>
       <!--登陆表单区域-->
-      <el-form ref="form"  label-width="0px" class="login_form">
+      <el-form ref="loginFormRef" :model="loginForm" :rules="loginFormRules" label-width="0px" class="login_form">
         <!--用户名-->
-        <el-form-item>
-          <el-input placeholder="用户名"></el-input>
+        <el-form-item prop="username">
+          <el-input v-model="loginForm.username" placeholder="用户名"></el-input>
         </el-form-item>
         <!--密码-->
-        <el-form-item >
-          <el-input placeholder="密码"></el-input>
+        <el-form-item prop="password">
+          <el-input v-model="loginForm.password" placeholder="密码" type="password"></el-input>
         </el-form-item>
         <!--按钮-->
         <el-form-item class="btns">
-          <el-button type="primary">提交</el-button>
+          <el-button type="primary" v-on:click="login">提交</el-button>
         </el-form-item>
       </el-form >
     </div>
@@ -26,7 +26,33 @@
 
 <script>
 export default {
-  name: "Login"
+  name: "Login",
+  data(){
+    return{
+      //登陆表单的数据绑定对象
+      loginForm:{
+        'username':'',
+        'password':''
+      },
+      //验证规则
+      loginFormRules:{
+        username: [
+          { required: true, message: '请输入用户名', trigger: 'blur' },
+          { min: 3, max: 10, message: '长度在 3 到 10 个字符', trigger: 'blur' }
+        ],
+        password: [
+          { required: true, message: '请输入密码', trigger: 'blur' },
+        ]
+      }
+    }
+  },
+  methods:{
+    login(){
+      this.$refs.loginFormRef.validate(valid => {
+        console.log(valid)
+      })
+    }
+  }
 }
 </script>
 
