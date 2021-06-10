@@ -51,18 +51,19 @@ export default {
       this.$refs.loginFormRef.validate(async valid => {
         if (!valid) return
         const {data:res} = await this.$http.post('/evaluate/login',this.loginForm)
+        if (res.status > 0 ) return this.$message.error('登录失败');
+        this.$message.success('登录成功');
         console.log(res)
-        if (res.status > 0 ) return console.log("失败")
-        console.log("success")
-        this.$http.post('/evaluate/login',this.loginForm).then(function (response){
-          console.log(response)
-        })
+        //session_storage里存token
+        sessionStorage.setItem('token',res.data.token)
+        //登录成功调到主页
+        await this.$router.push("/home")
         /*下面这种方式也可以*/
         // this.$http.post('/evaluate/login',this.loginForm).then(function (response){
         //   if (response.data.status > 0) return  console.log("失败")
         //   console.log("0k")
         // })
-      })
+      });
     }
   }
 }
