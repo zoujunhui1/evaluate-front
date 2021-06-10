@@ -11,17 +11,17 @@
         <!--左边-->
         <el-aside width="200px">
           <!--菜单栏-->
-          <el-menu background-color="#333744" text-color="#fff" active-text-color="#ffd04b">
+          <el-menu background-color="#333744" text-color="#fff" active-text-color="#ffd04b" unique-opened :router="true">
             <!--一级菜单-->
-            <el-submenu :index = "item.id+''" v-for="item in menuList" :key="item.id">
+            <el-submenu :index = "'/' + item.id" v-for="item in menuList" :key="item.id">
               <template slot="title">
                 <i class="el-icon-location"></i>
                 <span>{{ item.auth_name }}</span>
               </template>
               <!--二级菜单-->
-              <el-menu-item :index="subItem.id + ''" v-for="subItem in item.children" :key="subItem.id">
+              <el-menu-item :index="'/' + subItem.path" v-for="subItem in item.children" :key="subItem.id">
                 <template slot="title">
-                  <i class="el-icon-location"></i>
+                  <i class="el-icon-menu"></i>
                   <span>{{subItem.auth_name}}</span>
                 </template>
               </el-menu-item>
@@ -29,8 +29,10 @@
           </el-menu>
 
         </el-aside>
-        <!--右边-->
-        <el-main>Main</el-main>
+        <!--main-->
+        <el-main>
+          <router-view></router-view>
+        </el-main>
       </el-container>
     </el-container>
 </template>
@@ -80,7 +82,6 @@ export default {
 
       ]
       this.menuList = res
-      console.log(this.menuList[0].children)
     }
   }
 }
@@ -103,6 +104,9 @@ export default {
 
 .el-aside {
   background-color: #333744;
+  .el-menu {
+    border-right: none;
+  }
 }
 
 .el-main {

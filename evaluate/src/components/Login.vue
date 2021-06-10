@@ -53,7 +53,6 @@ export default {
         const {data:res} = await this.$http.post('/evaluate/login',this.loginForm)
         if (res.status > 0 ) return this.$message.error('登录失败');
         this.$message.success('登录成功');
-        console.log(res)
         //session_storage里存token
         sessionStorage.setItem('token',res.data.token)
         //登录成功调到主页

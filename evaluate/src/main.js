@@ -13,7 +13,6 @@ Vue.use(ElementUI)
 Vue.prototype.$message = Message
 axios.defaults.baseURL = 'http://150.109.150.224'
 axios.interceptors.request.use(config=>{
-  console.log(config)
   //每次获取token放到header里
   config.headers.Authorization = sessionStorage.getItem('token')
   return config
