@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import ProductList from '../components/ProductList'
+import GoodsList from '../components/GoodsList'
 import Login from '../components/Login'
 import Home from "../components/Home";
 import Welcome from "../components/Welcome";
@@ -25,13 +25,12 @@ const router = new Router({
         {
           path:'/welcome',
           component:Welcome
+        },
+        {
+          path: '/goods_list',
+          component: GoodsList
         }
       ]
-    },
-    {
-      path: '/product-list',
-      name: 'ProductList',
-      component: ProductList
     }
   ]
 })
