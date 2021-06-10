@@ -31,8 +31,8 @@ export default {
     return{
       //登陆表单的数据绑定对象
       loginForm:{
-        'username':'',
-        'password':''
+        'username':'zjh123456',
+        'password':'11111111'
       },
       //验证规则
       loginFormRules:{
@@ -48,8 +48,20 @@ export default {
   },
   methods:{
     login(){
-      this.$refs.loginFormRef.validate(valid => {
-        console.log(valid)
+      this.$refs.loginFormRef.validate(async valid => {
+        if (!valid) return
+        const {data:res} = await this.$http.post('/evaluate/login',this.loginForm)
+        console.log(res)
+        if (res.status > 0 ) return console.log("失败")
+        console.log("success")
+        this.$http.post('/evaluate/login',this.loginForm).then(function (response){
+          console.log(response)
+        })
+        /*下面这种方式也可以*/
+        // this.$http.post('/evaluate/login',this.loginForm).then(function (response){
+        //   if (response.data.status > 0) return  console.log("失败")
+        //   console.log("0k")
+        // })
       })
     }
   }
