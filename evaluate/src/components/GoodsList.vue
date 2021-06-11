@@ -143,6 +143,8 @@ export default {
         this.$message.success('添加成功');
         //隐藏对话框
         this.addDialogVisible = false
+        //刷新当前页面
+        await this.getGoodsList()
       })
     },
     //展示产品编辑框
