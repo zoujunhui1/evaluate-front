@@ -12,8 +12,8 @@
 <!--搜索栏+商品添加-->
       <el-row :gutter="20" >
         <el-col :span="7">
-            <el-input placeholder="请输入内容" class="input-with-select">
-              <el-button slot="append" icon="el-icon-search"></el-button>
+            <el-input placeholder="请输入内容" v-model="queryInfo.id">
+              <el-button slot="append" icon="el-icon-search" v-on:click="getGoodsList"></el-button>
             </el-input>
         </el-col>
         <el-col :span="4">
@@ -55,6 +55,7 @@ export default {
   data () {
     return {
       queryInfo :{
+        id:null,
         page :1,
         count :10,
       },
@@ -71,9 +72,9 @@ export default {
      const {data:res} = await this.$http.get('/evaluate/list',{params: this.queryInfo})
      if (res.status > 0 ) return this.$message.error("获取产品列表失败")
      this.goodsList = res.data.list
-     this.total = res.data.total
-     this.queryInfo.count = res.data.count
-     this.queryInfo.page = res.data.page
+     this.total = parseInt(res.data.total)
+     this.queryInfo.count = parseInt(res.data.count)
+     this.queryInfo.page = parseInt(res.data.page)
     },
     //监听每页展示条数
     handleSizeChange(newSize) {
