@@ -12,7 +12,7 @@
 <!--搜索栏+商品添加-->
       <el-row :gutter="20" >
         <el-col :span="7">
-            <el-input placeholder="请输入内容" v-model="queryInfo.id">
+            <el-input placeholder="请输入内容" v-model="queryInfo.id" clearable v-on:clear="getGoodsList">
               <el-button slot="append" icon="el-icon-search" v-on:click="getGoodsList"></el-button>
             </el-input>
         </el-col>
