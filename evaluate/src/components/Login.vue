@@ -62,7 +62,7 @@ export default {
         //   if (response.data.status > 0) return  console.log("失败")
         //   console.log("0k")
         // })
-      });
+      })
     }
   }
 }
