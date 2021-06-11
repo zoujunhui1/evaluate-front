@@ -12,12 +12,12 @@
 <!--搜索栏+商品添加-->
       <el-row :gutter="20" >
         <el-col :span="7">
-            <el-input placeholder="请输入内容" v-model="queryInfo.id" clearable v-on:clear="getGoodsList">
+            <el-input placeholder="请输入产品编号" v-model="queryInfo.id" clearable v-on:clear="getGoodsList">
               <el-button slot="append" icon="el-icon-search" v-on:click="getGoodsList"></el-button>
             </el-input>
         </el-col>
         <el-col :span="4">
-          <el-button type="primary">添加商品</el-button>
+          <el-button type="primary" v-on:click="addDialogVisible = true">添加商品</el-button>
         </el-col>
       </el-row>
 <!--商品展示列表-->
@@ -46,6 +46,19 @@
         :total="total">
       </el-pagination>
     </el-card>
+<!--商品添加对话框-->
+    <el-dialog title="商品添加" :visible.sync="addDialogVisible" width="50%">
+      <el-form :model="addForm" :rules="addFormRules"
+               ref="addFormRef" label-width="80px">
+        <el-form-item label="产品名称" prop="name">
+          <el-input v-model="addForm.name"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+    <el-button v-on:click="addDialogVisible = false">取 消</el-button>
+    <el-button type="primary" v-on:click="addGood">确 定</el-button>
+  </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -61,6 +74,18 @@ export default {
       },
       goodsList :[],
       total:0,
+      addDialogVisible:false,
+      //添加商品
+      addForm:{
+        name :''
+      },
+      //商品验证规则
+      addFormRules:{
+        name: [
+          { required: true, message: '请输入产品名称', trigger: 'blur' },
+          { min: 1, max: 15, message: '长度在 1 到 15 个字符', trigger: 'blur' }
+        ],
+      }
     }
   },
   created () {
@@ -85,7 +110,19 @@ export default {
     handleCurrentChange (newPage) {
       this.queryInfo.page =  newPage
       this.getGoodsList()
+    },
+    //添加产品
+    addGood() {
+      this.$refs.addFormRef.validate(async valid=>{
+        if (!valid) return
+        const {data:res} = await this.$http.post('/evaluate/add',this.addForm)
+        console.log(res)
+        this.$message.success('添加成功');
+        //隐藏对话框
+        this.addDialogVisible = false
+      })
     }
+
   }
 }
 </script>
