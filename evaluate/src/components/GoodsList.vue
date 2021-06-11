@@ -30,7 +30,7 @@
               <el-button type="primary" icon="el-icon-edit" size="mini" v-on:click="showEditDialog(scope.row.id)">编辑</el-button>
             </el-tooltip>
             <el-tooltip effect="dark" content="删除" placement="top-start" :enterable ="false">
-              <el-button type="danger" icon="el-icon-delete"size="mini">删除</el-button>
+              <el-button type="danger" icon="el-icon-delete"size="mini" v-on:click="removeGoodById(scope.row.id)">删除</el-button>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -174,7 +174,32 @@ export default {
     //监听修改编辑框关闭
     editDialogClosed() {
      this.$refs.editFormRef.resetFields()
+    },
+    //删除商品
+    async removeGoodById(id) {
+      const confirmResult = await this.$confirm('是否删除?', '', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).catch(err=>err)
+      //如果"确认"则会返回字符串confirm
+      //如果"取消"则会返回字符串cancel
+      if (confirmResult !== "confirm" ) {
+        return this.$message.info("已经取消")
+      }
+      const {data:res} = await this.$http.post('/evaluate/del', {
+        'id':id
+      })
+      console.log(res)
+      if (res.status > 0 ) return this.$message.error("删除失败")
+      //重新获取列表
+      await this.getGoodsList()
+      //提示成功
+      this.$message.success('删除成功');
+
     }
+
+
 
   }
 }
