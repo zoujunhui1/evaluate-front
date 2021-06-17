@@ -22,7 +22,7 @@
       </el-row>
 <!--商品展示列表-->
       <el-table :data="goodsList" border stripe>
-        <el-table-column prop="product_id" label="产品编号"></el-table-column>
+        <el-table-column prop="id" label="产品编号"></el-table-column>
         <el-table-column prop="name" label="名称" ></el-table-column>
         <el-table-column prop="" label="操作">
           <template slot-scope="scope">
@@ -53,6 +53,13 @@
         <el-form-item label="产品名称" prop="name">
           <el-input v-model="addForm.name"></el-input>
         </el-form-item>
+        <!--图片上传-->
+        <el-upload :action="uploadUrl"
+          :on-preview="handlePreview" :on-remove="handleRemove"
+          list-type="picture" :headers="headerObj" :on-success="handleSuccess">
+          <el-button size="small" type="primary">点击上传</el-button>
+          <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过300kb</div>
+        </el-upload>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button v-on:click="addDialogVisible = false">取 消</el-button>
@@ -72,6 +79,10 @@
         <el-button @click="showDialogVisible = false">取 消</el-button>
         <el-button type="primary" v-on:click="editGood">确 定</el-button>
       </span>
+    </el-dialog>
+<!--图片预览-->
+    <el-dialog title="图片预览" :visible.sync="previewVisible" width="50%" >
+      <img :src="previewPath" class="previewImg">
     </el-dialog>
   </div>
 </template>
@@ -109,6 +120,17 @@ export default {
           { min: 1, max: 15, message: '长度在 1 到 15 个字符', trigger: 'blur' }
         ],
       },
+      //图片上传地址
+      uploadUrl:"http://150.109.150.224/evaluate/upload",
+      headerObj :{
+        Authorization:window.sessionStorage.getItem('token')
+      },
+      //图片上传-图片地址
+      pic :[],
+      //图片上传-图片预览地址
+      previewPath :"",
+      //图片上传-图片预览
+      previewVisible:false
     }
   },
   created () {
@@ -192,17 +214,38 @@ export default {
       const {data:res} = await this.$http.post('/evaluate/del', {
         'id':id
       })
-      console.log(res)
       if (res.status > 0 ) return this.$message.error("删除失败")
       //重新获取列表
       await this.getGoodsList()
       //提示成功
       this.$message.success('删除成功');
+    },
+    //图片上传-预览图片
+    handlePreview(file) {
+      this.previewPath = file.response.data.file_url
+      this.previewVisible = true
+      // console.log(previewPath)
+    },
+    //图片上传-移除图片
+    handleRemove(file) {
+      //1.获取要删除图片的地址
+      const filePath = file.response.data.file_url
+      console.log(filePath)
 
+      //2.从pic数组中找到该地址的索引值
+      const i = this.addForm.pic.findIndex(x =>
+        x.pic === filePath
+      )
+      //3.删除该地址
+      this.addForm.pic.splice(i,1)
+      console.log(this.addForm.pic)
+    },
+    //图片上传-监听图片上传成功的钩子
+    handleSuccess(response) {
+      if (response.status > 0 ) return this.$message.error("上传失败")
+      this.pic.push(response.data.file_url)
+      this.addForm.pic = this.pic
     }
-
-
-
   }
 }
 </script>
@@ -219,5 +262,8 @@ export default {
 }
 .el-pagination {
   margin-top: 15px;
+}
+.previewImg {
+  width: 100%;
 }
 </style>
