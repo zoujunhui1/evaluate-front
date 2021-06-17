@@ -53,6 +53,7 @@
         <el-form-item label="产品名称" prop="name">
           <el-input v-model="addForm.name"></el-input>
         </el-form-item>
+        <el-form-item label="">
         <!--图片上传-->
         <el-upload :action="uploadUrl"
           :on-preview="handlePreview" :on-remove="handleRemove"
@@ -60,6 +61,7 @@
           <el-button size="small" type="primary">点击上传</el-button>
           <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过300kb</div>
         </el-upload>
+        </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button v-on:click="addDialogVisible = false">取 消</el-button>
