@@ -53,15 +53,13 @@
         <el-form-item label="产品名称" prop="name">
           <el-input v-model="addForm.name"></el-input>
         </el-form-item>
-        <el-form-item label="">
         <!--图片上传-->
-        <el-upload :action="uploadUrl"
-          :on-preview="handlePreview" :on-remove="handleRemove"
-          list-type="picture" :headers="headerObj" :on-success="handleSuccess">
-          <el-button size="small" type="primary">点击上传</el-button>
-          <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过300kb</div>
-        </el-upload>
-        </el-form-item>
+<!--        <el-upload :action="uploadUrl"-->
+<!--          :on-preview="handlePreview" :on-remove="handleRemove"-->
+<!--          list-type="picture" :headers="headerObj" :on-success="handleSuccess">-->
+<!--          <el-button size="small" type="primary">点击上传</el-button>-->
+<!--          <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过300kb</div>-->
+<!--        </el-upload>-->
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button v-on:click="addDialogVisible = false">取 消</el-button>
@@ -83,9 +81,9 @@
       </span>
     </el-dialog>
 <!--图片预览-->
-    <el-dialog title="图片预览" :visible.sync="previewVisible" width="50%" >
-      <img :src="previewPath" class="previewImg">
-    </el-dialog>
+<!--    <el-dialog title="图片预览" :visible.sync="previewVisible" width="50%" >-->
+<!--      <img :src="previewPath" class="previewImg">-->
+<!--    </el-dialog>-->
   </div>
 </template>
 
@@ -222,32 +220,32 @@ export default {
       //提示成功
       this.$message.success('删除成功');
     },
-    //图片上传-预览图片
-    handlePreview(file) {
-      this.previewPath = file.response.data.file_url
-      this.previewVisible = true
-      // console.log(previewPath)
-    },
-    //图片上传-移除图片
-    handleRemove(file) {
-      //1.获取要删除图片的地址
-      const filePath = file.response.data.file_url
-      console.log(filePath)
-
-      //2.从pic数组中找到该地址的索引值
-      const i = this.addForm.pic.findIndex(x =>
-        x.pic === filePath
-      )
-      //3.删除该地址
-      this.addForm.pic.splice(i,1)
-      console.log(this.addForm.pic)
-    },
-    //图片上传-监听图片上传成功的钩子
-    handleSuccess(response) {
-      if (response.status > 0 ) return this.$message.error("上传失败")
-      this.pic.push(response.data.file_url)
-      this.addForm.pic = this.pic
-    }
+    // //图片上传-预览图片
+    // handlePreview(file) {
+    //   this.previewPath = file.response.data.file_url
+    //   this.previewVisible = true
+    //   // console.log(previewPath)
+    // },
+    // //图片上传-移除图片
+    // handleRemove(file) {
+    //   //1.获取要删除图片的地址
+    //   const filePath = file.response.data.file_url
+    //   console.log(filePath)
+    //
+    //   //2.从pic数组中找到该地址的索引值
+    //   const i = this.addForm.pic.findIndex(x =>
+    //     x.pic === filePath
+    //   )
+    //   //3.删除该地址
+    //   this.addForm.pic.splice(i,1)
+    //   console.log(this.addForm.pic)
+    // },
+    // //图片上传-监听图片上传成功的钩子
+    // handleSuccess(response) {
+    //   if (response.status > 0 ) return this.$message.error("上传失败")
+    //   this.pic.push(response.data.file_url)
+    //   this.addForm.pic = this.pic
+    // }
   }
 }
 </script>
