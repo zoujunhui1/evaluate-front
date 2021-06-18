@@ -3,13 +3,13 @@
 <!--面包屑导航-->
     <el-breadcrumb separator="/">
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item>商品管理</el-breadcrumb-item>
-      <el-breadcrumb-item>商品列表</el-breadcrumb-item>
+      <el-breadcrumb-item>产品管理</el-breadcrumb-item>
+      <el-breadcrumb-item>产品列表</el-breadcrumb-item>
     </el-breadcrumb>
 
 <!--卡片-->
     <el-card>
-<!--搜索栏+商品添加-->
+<!--搜索栏+产品添加-->
       <el-row :gutter="20" >
         <el-col :span="7">
             <el-input placeholder="请输入产品编号" v-model="queryInfo.id" clearable v-on:clear="getGoodsList">
@@ -17,13 +17,15 @@
             </el-input>
         </el-col>
         <el-col :span="4">
-          <el-button type="primary" v-on:click="addDialogVisible = true">添加商品</el-button>
+          <el-button type="primary" v-on:click="addDialogVisible = true">添加产品</el-button>
         </el-col>
       </el-row>
-<!--商品展示列表-->
+<!--产品展示列表-->
       <el-table :data="goodsList" border stripe>
         <el-table-column prop="id" label="产品编号"></el-table-column>
         <el-table-column prop="name" label="名称" ></el-table-column>
+        <el-table-column prop="product_type" label="类别" ></el-table-column>
+        <el-table-column prop="issue_time" label="发行时间" ></el-table-column>
         <el-table-column prop="" label="操作">
           <template slot-scope="scope">
             <el-tooltip effect="dark" content="编辑" placement="top-start" :enterable ="false">
@@ -46,28 +48,60 @@
         :total="total">
       </el-pagination>
     </el-card>
-<!--商品添加对话框-->
-    <el-dialog title="商品添加" :visible.sync="addDialogVisible" width="50%">
+<!--产品添加对话框-->
+    <el-dialog title="产品添加" :visible.sync="addDialogVisible" width="50%">
       <el-form :model="addForm" :rules="addFormRules"
                ref="addFormRef" label-width="80px">
         <el-form-item label="产品名称" prop="name">
           <el-input v-model="addForm.name"></el-input>
         </el-form-item>
-        <!--图片上传-->
-        <el-upload :action="uploadUrl"
-          :on-preview="handlePreview" :on-remove="handleRemove"
-          list-type="picture" :headers="headerObj" :on-success="handleSuccess">
-          <el-button size="small" type="primary">点击上传</el-button>
-          <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过300kb</div>
-        </el-upload>
+        <el-form-item label="产品类别" prop="product_type">
+          <el-input v-model="addForm.product_type"></el-input>
+        </el-form-item>
+        <el-form-item label="发行时间" prop="issue_time">
+          <el-input v-model="addForm.issue_time"></el-input>
+        </el-form-item>
+        <el-form-item label="面值" prop="denomination">
+          <el-input v-model="addForm.denomination"></el-input>
+        </el-form-item>
+        <el-form-item label="版别" prop="denomination">
+          <el-input v-model="addForm.product_version"></el-input>
+        </el-form-item>
+        <el-form-item label="重量" prop="weight">
+          <el-input v-model.number="addForm.weight"></el-input>
+        </el-form-item>
+        <el-form-item label="尺寸:长" prop="length">
+          <el-input v-model.number="addForm.length"></el-input>
+        </el-form-item>
+        <el-form-item label="尺寸:宽" prop="width">
+          <el-input v-model.number="addForm.width"></el-input>
+        </el-form-item>
+        <el-form-item label="评级分数" prop="score">
+          <el-input v-model="addForm.score"></el-input>
+        </el-form-item>
+        <el-form-item label="鉴定结果" prop="identify_result">
+          <el-input v-model="addForm.identify_result"></el-input>
+        </el-form-item>
+        <el-form-item label="背景资料" prop="desc">
+          <el-input v-model="addForm.desc"></el-input>
+        </el-form-item>
+        <el-form-item label="图片上传">
+          <!--图片上传-->
+          <el-upload :action="uploadUrl"
+                     :on-preview="handlePreview" :on-remove="handleRemove"
+                     list-type="picture" :headers="headerObj" :on-success="handleSuccess">
+            <el-button size="small" type="primary">点击上传</el-button>
+            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过300kb</div>
+          </el-upload>
+        </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button v-on:click="addDialogVisible = false">取 消</el-button>
         <el-button type="primary" v-on:click="addGood">确 定</el-button>
       </span>
     </el-dialog>
-<!--商品编辑-->
-    <el-dialog title="商品编辑" :visible.sync="showDialogVisible"
+<!--产品编辑-->
+    <el-dialog title="产品编辑" :visible.sync="showDialogVisible"
                width="50%" @close = "editDialogClosed">
       <el-form :model="editForm" :rules="editFormRules"
                ref="editFormRef" label-width="80px">
@@ -99,21 +133,62 @@ export default {
       },
       goodsList :[],
       total:0,
-      addDialogVisible:false,//商品添加对话框
-      showDialogVisible:false,//商品编辑对话框
-      //添加商品
+      addDialogVisible:false,//产品添加对话框
+      showDialogVisible:false,//产品编辑对话框
+      //添加产品
       addForm:{
       },
-      //商品添加验证规则
+      //产品添加验证规则
       addFormRules:{
         name: [
-          { required: true, message: '请输入产品名称', trigger: 'blur' },
+          { required: true, message: '产品名称', trigger: 'blur' },
           { min: 1, max: 15, message: '长度在 1 到 15 个字符', trigger: 'blur' }
         ],
+        product_type: [
+          { required: true, message: '产品类别', trigger: 'blur' },
+          { min: 1, max: 15, message: '长度在 1 到 15 个字符', trigger: 'blur' }
+        ],
+        issue_time: [
+          { required: true, message: '发行时间', trigger: 'blur' },
+          { min: 1, max: 15, message: '长度在 1 到 15 个字符', trigger: 'blur' }
+        ],
+        denomination: [
+          { required: true, message: '面值', trigger: 'blur' },
+          { min: 1, max: 15, message: '长度在 1 到 15 个字符', trigger: 'blur' }
+        ],
+        product_version: [
+          { required: true, message: '版别', trigger: 'blur' },
+          { min: 1, max: 15, message: '长度在 1 到 15 个字符', trigger: 'blur' }
+        ],
+        weight: [
+          { required: true, message: '重量', trigger: 'blur' },
+          { type: 'number', message: '只能为数字', trigger: 'blur' }
+        ],
+        length: [
+          { required: true, message: '长', trigger: 'blur' },
+          { type: 'number', message: '只能为数字', trigger: 'blur' }
+        ],
+        width: [
+          { required: true, message: '宽', trigger: 'blur' },
+          { type: 'number', message: '只能为数字', trigger: 'blur' }
+        ],
+        score: [
+          { required: true, message: '评级分数', trigger: 'blur' },
+          { min: 1, max: 15, message: '长度在 1 到 15 个字符', trigger: 'blur' }
+        ],
+        identify_result: [
+          { required: true, message: '鉴定结果', trigger: 'blur' },
+          { min: 1, max: 15, message: '长度在 1 到 15 个字符', trigger: 'blur' }
+        ],
+        desc: [
+          { required: true, message: '背景资料', trigger: 'blur' },
+          { min: 1, max: 50, message: '长度在 1 到 50 个字符', trigger: 'blur' }
+        ],
       },
+      //编辑产品
       editForm:{
       },
-    //商品编辑验证规则
+    //产品编辑验证规则
       editFormRules:{
         name: [
           { required: true, message: '请输入产品名称', trigger: 'blur' },
@@ -137,7 +212,7 @@ export default {
     this.getGoodsList()
   },
   methods: {
-    //商品列表
+    //产品列表
    async getGoodsList(){
      const {data:res} = await this.$http.get('/evaluate/list',{params: this.queryInfo})
      if (res.status > 0 ) return this.$message.error("获取产品列表失败")
@@ -160,6 +235,7 @@ export default {
     addGood() {
       this.$refs.addFormRef.validate(async valid=>{
         if (!valid) return
+        console.log(this.addForm)
         const {data:res} = await this.$http.post('/evaluate/add',this.addForm)
         if (res.status > 0 ) return this.$message.error("添加失败")
         this.$message.success('添加成功');
@@ -176,7 +252,7 @@ export default {
       if (res.status > 0 || res.data.list.length === 0) return this.$message.error("获取产品失败")
       this.editForm = res.data.list[0]
     },
-    //编辑商品
+    //编辑产品
     editGood () {
       this.$refs.editFormRef.validate(async valid=>{
         if (!valid) return
@@ -199,7 +275,7 @@ export default {
     editDialogClosed() {
      this.$refs.editFormRef.resetFields()
     },
-    //删除商品
+    //删除产品
     async removeGoodById(id) {
       const confirmResult = await this.$confirm('是否删除?', '', {
         confirmButtonText: '确定',

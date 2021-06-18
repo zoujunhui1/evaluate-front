@@ -57,12 +57,12 @@ export default {
      const res = [
         {
           "id":1,
-          "auth_name":"商品管理",
+          "auth_name":"产品管理",
           "path":"goods",
           "children":[
             {
               "id":11,
-              "auth_name":"商品列表",
+              "auth_name":"产品列表",
               "path":"goods_list",
             }
           ]
