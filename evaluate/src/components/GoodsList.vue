@@ -108,6 +108,36 @@
         <el-form-item label="产品名称" prop="name">
           <el-input v-model="editForm.name"></el-input>
         </el-form-item>
+        <el-form-item label="产品类别" prop="product_type">
+          <el-input v-model="editForm.product_type"></el-input>
+        </el-form-item>
+        <el-form-item label="发行时间" prop="issue_time">
+          <el-input v-model="editForm.issue_time"></el-input>
+        </el-form-item>
+        <el-form-item label="面值" prop="denomination">
+          <el-input v-model="editForm.denomination"></el-input>
+        </el-form-item>
+        <el-form-item label="版别" prop="denomination">
+          <el-input v-model="editForm.product_version"></el-input>
+        </el-form-item>
+        <el-form-item label="重量" prop="weight">
+          <el-input v-model.number="editForm.weight"></el-input>
+        </el-form-item>
+        <el-form-item label="尺寸:长" prop="length">
+          <el-input v-model.number="editForm.length"></el-input>
+        </el-form-item>
+        <el-form-item label="尺寸:宽" prop="width">
+          <el-input v-model.number="editForm.width"></el-input>
+        </el-form-item>
+        <el-form-item label="评级分数" prop="score">
+          <el-input v-model="editForm.score"></el-input>
+        </el-form-item>
+        <el-form-item label="鉴定结果" prop="identify_result">
+          <el-input v-model="editForm.identify_result"></el-input>
+        </el-form-item>
+        <el-form-item label="背景资料" prop="desc">
+          <el-input v-model="editForm.desc"></el-input>
+        </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="showDialogVisible = false">取 消</el-button>
@@ -120,7 +150,6 @@
     </el-dialog>
   </div>
 </template>
-
 <script>
 
 export default {
@@ -194,6 +223,46 @@ export default {
           { required: true, message: '请输入产品名称', trigger: 'blur' },
           { min: 1, max: 15, message: '长度在 1 到 15 个字符', trigger: 'blur' }
         ],
+        product_type: [
+          { required: true, message: '产品类别', trigger: 'blur' },
+          { min: 1, max: 15, message: '长度在 1 到 15 个字符', trigger: 'blur' }
+        ],
+        issue_time: [
+          { required: true, message: '发行时间', trigger: 'blur' },
+          { min: 1, max: 15, message: '长度在 1 到 15 个字符', trigger: 'blur' }
+        ],
+        denomination: [
+          { required: true, message: '面值', trigger: 'blur' },
+          { min: 1, max: 15, message: '长度在 1 到 15 个字符', trigger: 'blur' }
+        ],
+        product_version: [
+          { required: true, message: '版别', trigger: 'blur' },
+          { min: 1, max: 15, message: '长度在 1 到 15 个字符', trigger: 'blur' }
+        ],
+        weight: [
+          { required: true, message: '重量', trigger: 'blur' },
+          { type: 'number', message: '只能为数字', trigger: 'blur' }
+        ],
+        length: [
+          { required: true, message: '长', trigger: 'blur' },
+          { type: 'number', message: '只能为数字', trigger: 'blur' }
+        ],
+        width: [
+          { required: true, message: '宽', trigger: 'blur' },
+          { type: 'number', message: '只能为数字', trigger: 'blur' }
+        ],
+        score: [
+          { required: true, message: '评级分数', trigger: 'blur' },
+          { min: 1, max: 15, message: '长度在 1 到 15 个字符', trigger: 'blur' }
+        ],
+        identify_result: [
+          { required: true, message: '鉴定结果', trigger: 'blur' },
+          { min: 1, max: 15, message: '长度在 1 到 15 个字符', trigger: 'blur' }
+        ],
+        desc: [
+          { required: true, message: '背景资料', trigger: 'blur' },
+          { min: 1, max: 50, message: '长度在 1 到 50 个字符', trigger: 'blur' }
+        ],
       },
       //图片上传地址
       uploadUrl:"http://150.109.150.224/evaluate/upload",
@@ -256,11 +325,7 @@ export default {
     editGood () {
       this.$refs.editFormRef.validate(async valid=>{
         if (!valid) return
-        const updateData = {
-          'id':this.editForm.id,
-          'name':this.editForm.name
-        }
-        const {data:res} = await this.$http.post('/evaluate/edit',updateData)
+        const {data:res} = await this.$http.post('/evaluate/edit',this.editForm)
         if (res.status > 0 ) return this.$message.error("编辑失败")
         //隐藏对话框
         this.showDialogVisible = false
@@ -268,7 +333,6 @@ export default {
         await this.getGoodsList()
         //提示成功
         this.$message.success('编辑成功');
-
       })
     },
     //监听修改编辑框关闭
