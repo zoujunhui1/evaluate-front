@@ -31,6 +31,9 @@
             <el-tooltip effect="dark" content="编辑" placement="top-start" :enterable ="false">
               <el-button type="primary" icon="el-icon-edit" size="mini" v-on:click="showEditDialog(scope.row.id)">编辑</el-button>
             </el-tooltip>
+            <el-tooltip effect="dark" content="查看详情" placement="top-start" :enterable ="false">
+              <el-button type="info" icon="el-icon-delete"size="mini" v-on:click="showGoodsInfo(scope.row.id)">查看详情</el-button>
+            </el-tooltip>
             <el-tooltip effect="dark" content="删除" placement="top-start" :enterable ="false">
               <el-button type="danger" icon="el-icon-delete"size="mini" v-on:click="removeGoodById(scope.row.id)">删除</el-button>
             </el-tooltip>
@@ -359,6 +362,17 @@ export default {
       await this.getGoodsList()
       //提示成功
       this.$message.success('删除成功');
+    },
+    //查看详情跳转
+    showGoodsInfo(id) {
+      let routeData = this.$router.resolve({
+        path:'/goods_info',
+        query:{
+          id: id,
+        }
+      })
+      window.open(routeData.href, "_blank");
+
     },
     //图片上传-预览图片
     handlePreview(file) {

@@ -4,6 +4,7 @@ import GoodsList from '../components/GoodsList'
 import Login from '../components/Login'
 import Home from "../components/Home";
 import Welcome from "../components/Welcome";
+import GoodsInfo from "../components/GoodsInfo";
 
 Vue.use(Router)
 
@@ -31,7 +32,12 @@ const router = new Router({
           component: GoodsList
         }
       ]
+    },
+    {
+      path:'/goods_info',
+      component:GoodsInfo
     }
+
   ]
 })
 
