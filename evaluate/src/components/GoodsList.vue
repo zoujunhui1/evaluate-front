@@ -26,6 +26,16 @@
         <el-table-column prop="name" label="名称" ></el-table-column>
         <el-table-column prop="product_type" label="类别" ></el-table-column>
         <el-table-column prop="issue_time" label="发行时间" ></el-table-column>
+        <el-table-column  label="二维码" >
+          <template slot-scope="props">
+            <el-image v-if="props.row.qr_code_url !==''"
+              style="width: 100px; height: 100px"
+              :src="props.row.qr_code_url"
+              fit=contain>
+            </el-image>
+            <span v-else>正在生成二维码</span>
+          </template>
+        </el-table-column>
         <el-table-column prop="" label="操作">
           <template slot-scope="scope">
             <el-tooltip effect="dark" content="编辑" placement="top-start" :enterable ="false">
@@ -67,7 +77,7 @@
         <el-form-item label="面值" prop="denomination">
           <el-input v-model="addForm.denomination"></el-input>
         </el-form-item>
-        <el-form-item label="版别" prop="denomination">
+        <el-form-item label="版别" prop="product_version">
           <el-input v-model="addForm.product_version"></el-input>
         </el-form-item>
         <el-form-item label="重量" prop="weight">
@@ -372,7 +382,6 @@ export default {
         }
       })
       window.open(routeData.href, "_blank");
-
     },
     //图片上传-预览图片
     handlePreview(file) {
