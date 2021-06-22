@@ -39,13 +39,13 @@
         <el-table-column prop="" label="操作">
           <template slot-scope="scope">
             <el-tooltip effect="dark" content="编辑" placement="top-start" :enterable ="false">
-              <el-button type="primary" icon="el-icon-edit" size="mini" v-on:click="showEditDialog(scope.row.id)">编辑</el-button>
+              <el-button type="primary" size="mini" v-on:click="showEditDialog(scope.row.id)">编辑</el-button>
             </el-tooltip>
             <el-tooltip effect="dark" content="查看详情" placement="top-start" :enterable ="false">
-              <el-button type="info" icon="el-icon-delete"size="mini" v-on:click="showGoodsInfo(scope.row.id)">查看详情</el-button>
+              <el-button type="info" size="mini" v-on:click="showGoodsInfo(scope.row.id)">查看详情</el-button>
             </el-tooltip>
             <el-tooltip effect="dark" content="删除" placement="top-start" :enterable ="false">
-              <el-button type="danger" icon="el-icon-delete"size="mini" v-on:click="removeGoodById(scope.row.id)">删除</el-button>
+              <el-button type="danger" size="mini" v-on:click="removeGoodById(scope.row.id)">删除</el-button>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -317,7 +317,6 @@ export default {
     addGood() {
       this.$refs.addFormRef.validate(async valid=>{
         if (!valid) return
-        console.log(this.addForm)
         const {data:res} = await this.$http.post('/evaluate/add',this.addForm)
         if (res.status > 0 ) return this.$message.error("添加失败")
         this.$message.success('添加成功');
@@ -393,7 +392,6 @@ export default {
     handleRemove(file) {
       //1.获取要删除图片的地址
       const filePath = file.response.data.file_url
-      console.log(filePath)
 
       //2.从pic数组中找到该地址的索引值
       const i = this.addForm.pic.findIndex(x =>
@@ -401,7 +399,6 @@ export default {
       )
       //3.删除该地址
       this.addForm.pic.splice(i,1)
-      console.log(this.addForm.pic)
     },
     //图片上传-监听图片上传成功的钩子
     handleSuccess(response) {

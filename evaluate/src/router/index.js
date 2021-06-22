@@ -43,12 +43,15 @@ const router = new Router({
 
 //判断是否有token
 router.beforeEach((to,from,next) => {
-  //to：将要访问的路径
-  //from :从哪个路径跳转来
-  //next :next() 放行 next('/login')强制跳转
-  if (to.path == '/login') next()
+  //to：将要访问的路径 from :从哪个路径跳转来
+  //next: next() 放行 next('/login')强制跳转
+  if (to.path == '/login') {
+    next()
+  }
   const tokenStr = sessionStorage.getItem('token')
-  if (!tokenStr) next('/login')
+  if (to.path !='/goods_info' && !tokenStr) {
+    next('/login')
+  }
   next()
 })
 
