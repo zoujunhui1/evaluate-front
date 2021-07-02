@@ -9,7 +9,7 @@
       <el-form ref="loginFormRef" :model="loginForm" :rules="loginFormRules" label-width="0px" class="login_form">
         <!--用户名-->
         <el-form-item prop="username">
-          <el-input v-model="loginForm.username" placeholder="用户名"></el-input>
+          <el-input v-model="loginForm.name" placeholder="用户名"></el-input>
         </el-form-item>
         <!--密码-->
         <el-form-item prop="password">
@@ -31,12 +31,12 @@ export default {
     return{
       //登陆表单的数据绑定对象
       loginForm:{
-        'username':'',
+        'name':'',
         'password':''
       },
       //验证规则
       loginFormRules:{
-        username: [
+        name: [
           { required: true, message: '请输入用户名', trigger: 'blur' },
           { min: 3, max: 10, message: '长度在 3 到 10 个字符', trigger: 'blur' }
         ],
@@ -50,11 +50,12 @@ export default {
     login(){
       this.$refs.loginFormRef.validate(async valid => {
         if (!valid) return
-        const {data:res} = await this.$http.post('/evaluate/login',this.loginForm)
+        const {data:res} = await this.$http.post('/common/login',this.loginForm)
         if (res.status > 0 ) return this.$message.error('登录失败');
         this.$message.success('登录成功');
         //session_storage里存token
         sessionStorage.setItem('token',res.data.token)
+        sessionStorage.setItem('id',res.data.id)
         //登录成功调到主页
         await this.$router.push("/home")
         /*下面这种方式也可以*/

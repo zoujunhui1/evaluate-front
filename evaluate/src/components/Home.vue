@@ -50,8 +50,16 @@ export default {
   },
   methods:{
     logout(){
+      const token = sessionStorage.getItem("token");
+      const userId = sessionStorage.getItem("id");
+      this.$http.post('/common/logout',{
+        "token":token,
+        "id":parseInt(userId)
+      }).then(function (){
+
+      })
       sessionStorage.clear()
-      this.$router.push('/login')
+      this.$router.push("/login")
     },
     getMenuList () {
      const res = [
@@ -67,18 +75,18 @@ export default {
             }
           ]
         },
-       {
-         "id":2,
-         "auth_name":"用户管理",
-         "path":"user",
-         "children":[
-           {
-             "id":21,
-             "auth_name":"用户列表",
-             "path":"user_list",
-           }
-         ]
-       }
+       // {
+       //   "id":2,
+       //   "auth_name":"用户管理",
+       //   "path":"user",
+       //   "children":[
+       //     {
+       //       "id":21,
+       //       "auth_name":"用户列表",
+       //       "path":"user_list",
+       //     }
+       //   ]
+       // }
 
       ]
       this.menuList = res
