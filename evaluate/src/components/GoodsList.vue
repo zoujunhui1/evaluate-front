@@ -12,13 +12,13 @@
 <!--搜索栏+产品添加-->
       <el-row :gutter="20" >
         <el-col :span="7">
-            <el-input placeholder="请输入产品编号" v-model="queryInfo.id" clearable v-on:clear="getGoodsList">
+            <el-input placeholder="请输入产品编号" v-model="queryInfo.product_id" clearable v-on:clear="getGoodsList">
               <el-button slot="append" icon="el-icon-search" v-on:click="getGoodsList"></el-button>
             </el-input>
         </el-col>
-        <el-col :span="4">
-          <el-button type="primary" v-on:click="addDialogVisible = true">添加产品</el-button>
-        </el-col>
+<!--        <el-col :span="4">-->
+<!--          <el-button type="primary" v-on:click="addDialogVisible = true">添加产品</el-button>-->
+<!--        </el-col>-->
       </el-row>
 <!--产品展示列表-->
       <el-table :data="goodsList" border stripe>
@@ -28,24 +28,29 @@
         <el-table-column prop="issue_time" label="发行时间" ></el-table-column>
         <el-table-column label="二维码" >
           <template slot-scope="props">
-            <el-image v-if="props.row.qr_code_url !==''"
+            <el-image v-if="props.row.text_url !==''"
               style="width: 100px; height: 100px"
-              :src="props.row.qr_code_url"
+              :src="props.row.text_url"
               fit=contain>
             </el-image>
-            <span v-else>正在生成二维码</span>
+            <span v-else>编辑完成后生成</span>
           </template>
         </el-table-column>
         <el-table-column prop="" label="操作">
           <template slot-scope="scope">
             <el-tooltip effect="dark" content="编辑" placement="top-start" :enterable ="false">
-              <el-button type="primary" size="mini" v-on:click="showEditDialog(scope.row.id)">编辑</el-button>
+              <el-button type="primary" size="mini" v-on:click="showEditDialog(scope.row.product_id)">编辑</el-button>
             </el-tooltip>
             <el-tooltip effect="dark" content="查看详情" placement="top-start" :enterable ="false">
               <el-button type="info" size="mini" v-on:click="showGoodsInfo(scope.row.id)">查看详情</el-button>
             </el-tooltip>
             <el-tooltip effect="dark" content="删除" placement="top-start" :enterable ="false">
               <el-button type="danger" size="mini" v-on:click="removeGoodById(scope.row.product_id)">删除</el-button>
+            </el-tooltip>
+            <el-tooltip effect="dark" content="下载图片" placement="top-start" :enterable ="false">
+              <el-button type="success" size="mini">
+                <a :href="imageDownloadUrl+scope.row.product_id">下载图片</a>
+              </el-button>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -83,11 +88,8 @@
         <el-form-item label="重量" prop="weight">
           <el-input v-model.number="addForm.weight"></el-input>
         </el-form-item>
-        <el-form-item label="尺寸:长" prop="length">
-          <el-input v-model.number="addForm.length"></el-input>
-        </el-form-item>
-        <el-form-item label="尺寸:宽" prop="width">
-          <el-input v-model.number="addForm.width"></el-input>
+        <el-form-item label="厚度" prop="thick">
+          <el-input v-model.number="addForm.thick"></el-input>
         </el-form-item>
         <el-form-item label="评级分数" prop="score">
           <el-input v-model="addForm.score"></el-input>
@@ -98,15 +100,15 @@
         <el-form-item label="背景资料" prop="desc">
           <el-input v-model="addForm.desc"></el-input>
         </el-form-item>
-        <el-form-item label="图片上传">
-          <!--图片上传-->
-          <el-upload :action="uploadUrl"
-                     :on-preview="handlePreview" :on-remove="handleRemove"
-                     list-type="picture" :headers="headerObj" :on-success="handleSuccess">
-            <el-button size="small" type="primary">点击上传</el-button>
-            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过300kb</div>
-          </el-upload>
-        </el-form-item>
+<!--        <el-form-item label="图片上传">-->
+<!--          &lt;!&ndash;图片上传&ndash;&gt;-->
+<!--          <el-upload :action="uploadUrl"-->
+<!--                     :on-preview="handlePreview" :on-remove="handleRemove"-->
+<!--                     list-type="picture" :headers="headerObj" :on-success="handleSuccess">-->
+<!--            <el-button size="small" type="primary">点击上传</el-button>-->
+<!--            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过300kb</div>-->
+<!--          </el-upload>-->
+<!--        </el-form-item>-->
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button v-on:click="addDialogVisible = false">取 消</el-button>
@@ -136,11 +138,8 @@
         <el-form-item label="重量" prop="weight">
           <el-input v-model.number="editForm.weight"></el-input>
         </el-form-item>
-        <el-form-item label="尺寸:长" prop="length">
-          <el-input v-model.number="editForm.length"></el-input>
-        </el-form-item>
-        <el-form-item label="尺寸:宽" prop="width">
-          <el-input v-model.number="editForm.width"></el-input>
+        <el-form-item label="厚度" prop="thick">
+          <el-input v-model.number="editForm.thick"></el-input>
         </el-form-item>
         <el-form-item label="评级分数" prop="score">
           <el-input v-model="editForm.score"></el-input>
@@ -169,7 +168,7 @@ export default {
   data () {
     return {
       queryInfo :{
-        id:null,
+        product_id:null,
         page :1,
         page_size :20,
       },
@@ -177,6 +176,7 @@ export default {
       total:0,
       addDialogVisible:false,//产品添加对话框
       showDialogVisible:false,//产品编辑对话框
+      imageDownloadUrl :"http://81.71.91.145:8080/evaluate/product/image_download?product_id=",//图片下载
       //添加产品
       addForm:{
       },
@@ -256,12 +256,8 @@ export default {
           { required: true, message: '重量', trigger: 'blur' },
           { type: 'number', message: '只能为数字', trigger: 'blur' }
         ],
-        length: [
+        thick: [
           { required: true, message: '长', trigger: 'blur' },
-          { type: 'number', message: '只能为数字', trigger: 'blur' }
-        ],
-        width: [
-          { required: true, message: '宽', trigger: 'blur' },
           { type: 'number', message: '只能为数字', trigger: 'blur' }
         ],
         score: [
@@ -327,9 +323,9 @@ export default {
       })
     },
     //展示产品编辑框
-    async showEditDialog(id){
+    async showEditDialog(product_id){
       this.showDialogVisible = true
-      const {data:res} = await this.$http.get('/evaluate/list',{params: {'id':id}})
+      const {data:res} = await this.$http.get('/evaluate/product/list',{params: {'product_id':product_id}})
       if (res.status > 0 || res.data.list.length === 0) return this.$message.error("获取产品失败")
       this.editForm = res.data.list[0]
     },
@@ -337,7 +333,8 @@ export default {
     editGood () {
       this.$refs.editFormRef.validate(async valid=>{
         if (!valid) return
-        const {data:res} = await this.$http.post('/evaluate/edit',this.editForm)
+        console.log(this.editForm)
+        const {data:res} = await this.$http.post('/evaluate/product/edit',this.editForm)
         if (res.status > 0 ) return this.$message.error("编辑失败")
         //隐藏对话框
         this.showDialogVisible = false
