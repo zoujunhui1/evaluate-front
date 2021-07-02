@@ -22,11 +22,11 @@
       </el-row>
 <!--产品展示列表-->
       <el-table :data="goodsList" border stripe>
-        <el-table-column prop="id" label="产品编号"></el-table-column>
+        <el-table-column prop="product_id" label="产品编号"></el-table-column>
         <el-table-column prop="name" label="名称" ></el-table-column>
         <el-table-column prop="product_type" label="类别" ></el-table-column>
         <el-table-column prop="issue_time" label="发行时间" ></el-table-column>
-        <el-table-column  label="二维码" >
+        <el-table-column label="二维码" >
           <template slot-scope="props">
             <el-image v-if="props.row.qr_code_url !==''"
               style="width: 100px; height: 100px"
@@ -45,7 +45,7 @@
               <el-button type="info" size="mini" v-on:click="showGoodsInfo(scope.row.id)">查看详情</el-button>
             </el-tooltip>
             <el-tooltip effect="dark" content="删除" placement="top-start" :enterable ="false">
-              <el-button type="danger" size="mini" v-on:click="removeGoodById(scope.row.id)">删除</el-button>
+              <el-button type="danger" size="mini" v-on:click="removeGoodById(scope.row.product_id)">删除</el-button>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -55,8 +55,8 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="queryInfo.page"
-        :page-sizes="[10, 20, 35, 40]"
-        :page-size="queryInfo.count"
+        :page-sizes="[20, 40, 50]"
+        :page-size="queryInfo.page_size"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total">
       </el-pagination>
@@ -171,7 +171,7 @@ export default {
       queryInfo :{
         id:null,
         page :1,
-        count :10,
+        page_size :20,
       },
       goodsList :[],
       total:0,
@@ -296,16 +296,16 @@ export default {
   methods: {
     //产品列表
    async getGoodsList(){
-     const {data:res} = await this.$http.get('/evaluate/list',{params: this.queryInfo})
+     const {data:res} = await this.$http.get('/evaluate/product/list',{params: this.queryInfo})
      if (res.status > 0 ) return this.$message.error("获取产品列表失败")
      this.goodsList = res.data.list
      this.total = parseInt(res.data.total)
-     this.queryInfo.count = parseInt(res.data.count)
+     this.queryInfo.page_size = parseInt(res.data.page_size)
      this.queryInfo.page = parseInt(res.data.page)
     },
     //监听每页展示条数
     handleSizeChange(newSize) {
-      this.queryInfo.count = newSize
+      this.queryInfo.page_size = newSize
       this.getGoodsList()
     },
     //监听页码值改变的事件
@@ -352,7 +352,7 @@ export default {
      this.$refs.editFormRef.resetFields()
     },
     //删除产品
-    async removeGoodById(id) {
+    async removeGoodById(product_id) {
       const confirmResult = await this.$confirm('是否删除?', '', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -363,8 +363,8 @@ export default {
       if (confirmResult !== "confirm" ) {
         return this.$message.info("已经取消")
       }
-      const {data:res} = await this.$http.post('/evaluate/del', {
-        'id':id
+      const {data:res} = await this.$http.post('/evaluate/product/del', {
+        'product_id':product_id
       })
       if (res.status > 0 ) return this.$message.error("删除失败")
       //重新获取列表
