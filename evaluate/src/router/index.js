@@ -34,7 +34,7 @@ const router = new Router({
       ]
     },
     {
-      path:'/goods_info',
+      path:'/product_info',
       component:GoodsInfo
     }
 

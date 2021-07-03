@@ -46,7 +46,7 @@
               <el-button type="primary" size="mini" v-on:click="showEditDialog(scope.row.product_id)">编辑</el-button>
             </el-tooltip>
             <el-tooltip effect="dark" content="查看详情" placement="top-start" :enterable ="false">
-              <el-button type="info" size="mini" v-on:click="showGoodsInfo(scope.row.id)">查看详情</el-button>
+              <el-button type="info" size="mini" v-on:click="showGoodsInfo(scope.row.product_id)">查看详情</el-button>
             </el-tooltip>
             <el-tooltip effect="dark" content="删除" placement="top-start" :enterable ="false">
               <el-button type="danger" size="mini" v-on:click="removeGoodById(scope.row.product_id)">删除</el-button>
@@ -388,11 +388,11 @@ export default {
       this.$message.success('删除成功');
     },
     //查看详情跳转
-    showGoodsInfo(id) {
+    showGoodsInfo(product_id) {
       let routeData = this.$router.resolve({
-        path:'/goods_info',
+        path:'/product_info',
         query:{
-          id: id,
+          product_id: product_id,
         }
       })
       window.open(routeData.href, "_blank");

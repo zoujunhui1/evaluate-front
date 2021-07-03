@@ -23,12 +23,6 @@
             <el-form-item label="重量">
               <span>{{ props.row.weight }} g</span>
             </el-form-item>
-            <el-form-item label="尺寸:长">
-              <span>{{ props.row.length }} mm</span>
-            </el-form-item>
-            <el-form-item label="尺寸:宽">
-              <span>{{ props.row.width }} mm</span>
-            </el-form-item>
             <el-form-item label="评级分数">
               <span>{{ props.row.score }}</span>
             </el-form-item>
@@ -61,16 +55,16 @@ export default {
     }
   },
   created() {
-    let id = this.$route.query.id
-    this.getGoods(id)
+    let product_id = this.$route.query.product_id
+    this.getGoods(product_id)
   },
   methods: {
-    async getGoods (id) {
-      const {data:res} = await this.$http.get('/evaluate/get_product',{params: {'id':id}})
-      if (res.status > 0 ) return this.$message.error("获取产品失败")
-      this.tableData = res.data
+    async getGoods (product_id) {
+      const {data:res} = await this.$http.get('/evaluate/product/info',{params: {'product_id':product_id}})
+      if (res.status > 0 ) return this.$message.error("获取产品详情失败")
+      this.tableData.push(res.data.list)
       if (this.tableData.length > 0) {
-        this.url = res.data[0].pic
+        this.url = res.data.list.pic
       }
     }
   }
