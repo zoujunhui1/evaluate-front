@@ -26,14 +26,18 @@
         <el-table-column prop="name" label="名称" ></el-table-column>
         <el-table-column prop="product_type" label="类别" ></el-table-column>
         <el-table-column prop="issue_time" label="发行时间" ></el-table-column>
+
         <el-table-column label="二维码" >
           <template slot-scope="props">
             <el-image v-if="props.row.text_url !==''"
               style="width: 100px; height: 100px"
               :src="props.row.text_url"
+              v-on:click="addPreviewSrc(props.row.text_url)"
+              :preview-src-list="previewSrcList"
               fit=contain>
             </el-image>
             <span v-else>编辑完成后生成</span>
+
           </template>
         </el-table-column>
         <el-table-column prop="" label="操作">
@@ -150,6 +154,11 @@
         <el-form-item label="背景资料" prop="desc">
           <el-input v-model="editForm.desc"></el-input>
         </el-form-item>
+        <el-form-item label="生成数量">
+<!--          <el-input-number v-model="editForm.product_count" @change="handleChange" :min=0 :max="100" label="描述文字"></el-input-number>-->
+          <el-input-number v-model="product_num" @change="handleChange" :min="0" :max="100" label="描述文字"></el-input-number>
+
+        </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="showDialogVisible = false">取 消</el-button>
@@ -177,6 +186,7 @@ export default {
       addDialogVisible:false,//产品添加对话框
       showDialogVisible:false,//产品编辑对话框
       imageDownloadUrl :"http://81.71.91.145:8080/evaluate/product/image_download?product_id=",//图片下载
+      previewSrcList :[],
       //添加产品
       addForm:{
       },
@@ -283,7 +293,9 @@ export default {
       //图片上传-图片预览地址
       previewPath :"",
       //图片上传-图片预览
-      previewVisible:false
+      previewVisible:false,
+      //额外生成的产品数量
+      product_num :0
     }
   },
   created () {
@@ -328,11 +340,13 @@ export default {
       const {data:res} = await this.$http.get('/evaluate/product/list',{params: {'product_id':product_id}})
       if (res.status > 0 || res.data.list.length === 0) return this.$message.error("获取产品失败")
       this.editForm = res.data.list[0]
+      this.editForm.product_count = 0
     },
     //编辑产品
     editGood () {
       this.$refs.editFormRef.validate(async valid=>{
         if (!valid) return
+        this.editForm.product_count = this.product_num
         console.log(this.editForm)
         const {data:res} = await this.$http.post('/evaluate/product/edit',this.editForm)
         if (res.status > 0 ) return this.$message.error("编辑失败")
@@ -343,6 +357,10 @@ export default {
         //提示成功
         this.$message.success('编辑成功');
       })
+    },
+    //生成数量监听
+    handleChange (value){
+     this.product_num = value
     },
     //监听修改编辑框关闭
     editDialogClosed() {
@@ -378,6 +396,10 @@ export default {
         }
       })
       window.open(routeData.href, "_blank");
+    },
+    //二维码图片预览
+    addPreviewSrc(url){
+     this.previewSrcList.push(url)
     },
     //图片上传-预览图片
     handlePreview(file) {
