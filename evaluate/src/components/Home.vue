@@ -72,7 +72,12 @@ export default {
               "id":11,
               "auth_name":"产品列表",
               "path":"goods_list",
-            }
+            },
+            {
+              "id":12,
+              "auth_name":"配置列表",
+              "path":"config_list",
+            },
           ]
         },
        // {
