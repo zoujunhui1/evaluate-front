@@ -347,7 +347,6 @@ export default {
       this.$refs.editFormRef.validate(async valid=>{
         if (!valid) return
         this.editForm.product_count = this.product_num
-        console.log(this.editForm)
         const {data:res} = await this.$http.post('/evaluate/product/edit',this.editForm)
         if (res.status > 0 ) return this.$message.error("编辑失败")
         //隐藏对话框
