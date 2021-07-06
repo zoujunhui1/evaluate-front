@@ -5,6 +5,9 @@
       <el-table-column>
         <template slot-scope="props">
           <el-form label-position="left" inline class="demo-table-expand">
+            <el-form-item label="产品编号">
+              <span>{{ props.row.product_id }}</span>
+            </el-form-item>
             <el-form-item label="产品名称">
               <span>{{ props.row.name }}</span>
             </el-form-item>
@@ -21,7 +24,10 @@
               <span>{{ props.row.product_version }}</span>
             </el-form-item>
             <el-form-item label="尺寸">
-              <span>{{ props.row.weight }} * {{props.row.diameter}} mm</span>
+              <span> {{props.row.diameter}} * {{ props.row.thick }} mm</span>
+            </el-form-item>
+            <el-form-item label="重量">
+              <span>{{ props.row.weight }} g</span>
             </el-form-item>
             <el-form-item label="评级分数">
               <span>{{ infoEnumsList[props.row.score] }} {{infoEnumsList[props.row.level]}}</span>
