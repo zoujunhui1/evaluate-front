@@ -100,6 +100,11 @@
             <i slot="suffix" style="font-style:normal;margin-right: 10px;">单位/mm</i>
           </el-input>
         </el-form-item>
+        <el-form-item label="直径" prop="diameter">
+          <el-input v-model.number="editForm.diameter">
+            <i slot="suffix" style="font-style:normal;margin-right: 10px;">单位/mm</i>
+          </el-input>
+        </el-form-item>
         <el-form-item label="评级分数" prop="score">
           <el-select v-model.number="editForm.score" clearable placeholder="请选择">
             <el-option
@@ -184,7 +189,11 @@ export default {
           { type: 'number', message: '只能为数字', trigger: 'blur' }
         ],
         thick: [
-          { required: true, message: '长', trigger: 'blur' },
+          { required: true, message: '厚度', trigger: 'blur' },
+          { type: 'number', message: '只能为数字', trigger: 'blur' }
+        ],
+        diameter: [
+          { required: true, message: '直径', trigger: 'blur' },
           { type: 'number', message: '只能为数字', trigger: 'blur' }
         ],
         score: [

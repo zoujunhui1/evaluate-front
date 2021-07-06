@@ -20,11 +20,11 @@
             <el-form-item label="版别">
               <span>{{ props.row.product_version }}</span>
             </el-form-item>
-            <el-form-item label="重量">
-              <span>{{ props.row.weight }} g</span>
+            <el-form-item label="尺寸">
+              <span>{{ props.row.weight }} * {{props.row.diameter}} mm</span>
             </el-form-item>
             <el-form-item label="评级分数">
-              <span>{{ props.row.score }}</span>
+              <span>{{ infoEnumsList[props.row.score] }} {{infoEnumsList[props.row.level]}}</span>
             </el-form-item>
             <el-form-item label="鉴定结果">
               <span>{{ props.row.identify_result }}</span>
@@ -42,7 +42,6 @@
       </div>
     </div>
   </div>
-
 </template>
 
 <script>
@@ -52,11 +51,13 @@ export default {
     return {
       tableData: [],
       url:[],
+      infoEnumsList:[]
     }
   },
   created() {
     let product_id = this.$route.query.product_id
     this.getGoods(product_id)
+    this.getEnumsList()
   },
   methods: {
     async getGoods (product_id) {
@@ -66,10 +67,19 @@ export default {
       if (this.tableData.length > 0) {
         this.url = res.data.list.pic
       }
-    }
+    },
+    //枚举列表
+    async getEnumsList() {
+      const {data:res} = await this.$http.get('/common/enum/list')
+      if (res.status > 0 ) return this.$message.error("获取配置列表失败")
+      const tmp = new Array();
+      res.data.list.forEach((item) => {
+        tmp[item.enum_id]= item.enum_name
+      })
+      this.infoEnumsList = tmp
+    },
   }
 }
-
 </script>
 
 <style scoped>
