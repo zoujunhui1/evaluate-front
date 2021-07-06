@@ -38,7 +38,7 @@
                width="50%" @close = "addDialogClosed">
       <el-form :model="addConfigForm" :rules="addConfigFormRules" ref="addConfigFormRef" label-width="80px">
         <el-form-item label="一级配置" prop="enum_id">
-          <el-select v-model="addConfigForm.enum_id" clearable placeholder="请选择">
+          <el-select v-model.number="addConfigForm.enum_id" clearable placeholder="请选择">
             <el-option
               v-for="(item, index) in selectOptions"
               :key="index" :label="item.enum_name" :value="item.enum_id">

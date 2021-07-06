@@ -70,64 +70,15 @@
         :total="total">
       </el-pagination>
     </el-card>
-<!--产品添加对话框-->
-    <el-dialog title="产品添加" :visible.sync="addDialogVisible" width="50%">
-      <el-form :model="addForm" :rules="addFormRules"
-               ref="addFormRef" label-width="80px">
-        <el-form-item label="产品名称" prop="name">
-          <el-input v-model="addForm.name"></el-input>
-        </el-form-item>
-        <el-form-item label="产品类别" prop="product_type">
-          <el-input v-model="addForm.product_type"></el-input>
-        </el-form-item>
-        <el-form-item label="发行时间" prop="issue_time">
-          <el-input v-model="addForm.issue_time"></el-input>
-        </el-form-item>
-        <el-form-item label="面值" prop="denomination">
-          <el-input v-model="addForm.denomination"></el-input>
-        </el-form-item>
-        <el-form-item label="版别" prop="product_version">
-          <el-input v-model="addForm.product_version"></el-input>
-        </el-form-item>
-        <el-form-item label="重量" prop="weight">
-          <el-input v-model.number="addForm.weight"></el-input>
-        </el-form-item>
-        <el-form-item label="厚度" prop="thick">
-          <el-input v-model.number="addForm.thick"></el-input>
-        </el-form-item>
-        <el-form-item label="评级分数" prop="score">
-          <el-input v-model="addForm.score"></el-input>
-        </el-form-item>
-        <el-form-item label="鉴定结果" prop="identify_result">
-          <el-input v-model="addForm.identify_result"></el-input>
-        </el-form-item>
-        <el-form-item label="背景资料" prop="desc">
-          <el-input v-model="addForm.desc"></el-input>
-        </el-form-item>
-<!--        <el-form-item label="图片上传">-->
-<!--          &lt;!&ndash;图片上传&ndash;&gt;-->
-<!--          <el-upload :action="uploadUrl"-->
-<!--                     :on-preview="handlePreview" :on-remove="handleRemove"-->
-<!--                     list-type="picture" :headers="headerObj" :on-success="handleSuccess">-->
-<!--            <el-button size="small" type="primary">点击上传</el-button>-->
-<!--            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过300kb</div>-->
-<!--          </el-upload>-->
-<!--        </el-form-item>-->
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button v-on:click="addDialogVisible = false">取 消</el-button>
-        <el-button type="primary" v-on:click="addGood">确 定</el-button>
-      </span>
-    </el-dialog>
 <!--产品编辑-->
     <el-dialog title="产品编辑" :visible.sync="showDialogVisible"
-               width="50%" @close = "editDialogClosed">
-      <el-form :model="editForm" :rules="editFormRules"
-               ref="editFormRef" label-width="80px">
+               width="70%" @close = "editDialogClosed">
+
+      <el-form :model="editForm" :rules="editFormRules" ref="editFormRef" label-width="80px" :inline="true">
         <el-form-item label="产品名称" prop="name">
           <el-input v-model="editForm.name"></el-input>
         </el-form-item>
-        <el-form-item label="产品类别" prop="product_type">
+        <el-form-item label="类别" prop="product_type">
           <el-input v-model="editForm.product_type"></el-input>
         </el-form-item>
         <el-form-item label="发行时间" prop="issue_time">
@@ -140,13 +91,29 @@
           <el-input v-model="editForm.product_version"></el-input>
         </el-form-item>
         <el-form-item label="重量" prop="weight">
-          <el-input v-model.number="editForm.weight"></el-input>
+          <el-input v-model.number="editForm.weight">
+            <i slot="suffix" style="font-style:normal;margin-right: 10px;">单位/g</i>
+          </el-input>
         </el-form-item>
         <el-form-item label="厚度" prop="thick">
-          <el-input v-model.number="editForm.thick"></el-input>
+          <el-input v-model.number="editForm.thick">
+            <i slot="suffix" style="font-style:normal;margin-right: 10px;">单位/mm</i>
+          </el-input>
         </el-form-item>
         <el-form-item label="评级分数" prop="score">
-          <el-input v-model="editForm.score"></el-input>
+          <el-select v-model.number="editForm.score" clearable placeholder="请选择">
+            <el-option
+              v-for="(item, index) in enumsList[200]"
+              :key="index" :label="item.enum_name" :value="item.enum_id">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="评级级别" prop="level">
+          <el-select v-model.number="editForm.level" clearable placeholder="请选择">
+            <el-option
+              v-for="item in enumsList[100]" :label="item.enum_name" :value="item.enum_id">
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="鉴定结果" prop="identify_result">
           <el-input v-model="editForm.identify_result"></el-input>
@@ -155,10 +122,9 @@
           <el-input v-model="editForm.desc"></el-input>
         </el-form-item>
         <el-form-item label="生成数量">
-<!--          <el-input-number v-model="editForm.product_count" @change="handleChange" :min=0 :max="100" label="描述文字"></el-input-number>-->
-          <el-input-number v-model="product_num" @change="handleChange" :min="0" :max="100" label="描述文字"></el-input-number>
-
+          <el-input-number v-model="product_num" @change="handleChange" :min="0" :max="100" label="生成数量"></el-input-number>
         </el-form-item>
+
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="showDialogVisible = false">取 消</el-button>
@@ -183,64 +149,15 @@ export default {
       },
       goodsList :[],
       total:0,
-      addDialogVisible:false,//产品添加对话框
       showDialogVisible:false,//产品编辑对话框
       imageDownloadUrl :"http://81.71.91.145:8080/evaluate/product/image_download?product_id=",//图片下载
       previewSrcList :[],
       //添加产品
-      addForm:{
-      },
-      //产品添加验证规则
-      addFormRules:{
-        name: [
-          { required: true, message: '产品名称', trigger: 'blur' },
-          { min: 1, max: 15, message: '长度在 1 到 15 个字符', trigger: 'blur' }
-        ],
-        product_type: [
-          { required: true, message: '产品类别', trigger: 'blur' },
-          { min: 1, max: 15, message: '长度在 1 到 15 个字符', trigger: 'blur' }
-        ],
-        issue_time: [
-          { required: true, message: '发行时间', trigger: 'blur' },
-          { min: 1, max: 15, message: '长度在 1 到 15 个字符', trigger: 'blur' }
-        ],
-        denomination: [
-          { required: true, message: '面值', trigger: 'blur' },
-          { min: 1, max: 15, message: '长度在 1 到 15 个字符', trigger: 'blur' }
-        ],
-        product_version: [
-          { required: true, message: '版别', trigger: 'blur' },
-          { min: 1, max: 15, message: '长度在 1 到 15 个字符', trigger: 'blur' }
-        ],
-        weight: [
-          { required: true, message: '重量', trigger: 'blur' },
-          { type: 'number', message: '只能为数字', trigger: 'blur' }
-        ],
-        length: [
-          { required: true, message: '长', trigger: 'blur' },
-          { type: 'number', message: '只能为数字', trigger: 'blur' }
-        ],
-        width: [
-          { required: true, message: '宽', trigger: 'blur' },
-          { type: 'number', message: '只能为数字', trigger: 'blur' }
-        ],
-        score: [
-          { required: true, message: '评级分数', trigger: 'blur' },
-          { min: 1, max: 15, message: '长度在 1 到 15 个字符', trigger: 'blur' }
-        ],
-        identify_result: [
-          { required: true, message: '鉴定结果', trigger: 'blur' },
-          { min: 1, max: 15, message: '长度在 1 到 15 个字符', trigger: 'blur' }
-        ],
-        desc: [
-          { required: true, message: '背景资料', trigger: 'blur' },
-          { min: 1, max: 50, message: '长度在 1 到 50 个字符', trigger: 'blur' }
-        ],
-      },
+      addForm:{},
       //编辑产品
       editForm:{
       },
-    //产品编辑验证规则
+      //产品编辑验证规则
       editFormRules:{
         name: [
           { required: true, message: '请输入产品名称', trigger: 'blur' },
@@ -271,8 +188,8 @@ export default {
           { type: 'number', message: '只能为数字', trigger: 'blur' }
         ],
         score: [
-          { required: true, message: '评级分数', trigger: 'blur' },
-          { min: 1, max: 15, message: '长度在 1 到 15 个字符', trigger: 'blur' }
+          { required: true, message: '长', trigger: 'blur' },
+          { type: 'number', message: '只能为数字', trigger: 'blur' }
         ],
         identify_result: [
           { required: true, message: '鉴定结果', trigger: 'blur' },
@@ -295,11 +212,14 @@ export default {
       //图片上传-图片预览
       previewVisible:false,
       //额外生成的产品数量
-      product_num :0
+      product_num :0,
+      //所有枚举
+      enumsList:[],
     }
   },
   created () {
-    this.getGoodsList()
+    this.getGoodsList()//获取产品列表
+    this.getEnumsList()//获取枚举列表
   },
   methods: {
     //产品列表
@@ -311,6 +231,23 @@ export default {
      this.queryInfo.page_size = parseInt(res.data.page_size)
      this.queryInfo.page = parseInt(res.data.page)
     },
+    //枚举列表
+   async getEnumsList() {
+      const {data:res} = await this.$http.get('/common/enum/list')
+      if (res.status > 0 ) return this.$message.error("获取配置列表失败")
+      const tmp = new Array();
+      res.data.list.forEach((item, index) => {
+        if (item.level === 1){
+          tmp[item.enum_id] = new Array()
+          res.data.list.forEach((v, idx) => {
+            if (v.father_enum_id == item.enum_id) {
+              tmp[item.enum_id].push(v)
+            }
+          })
+       }
+     })
+     this.enumsList = tmp
+    },
     //监听每页展示条数
     handleSizeChange(newSize) {
       this.queryInfo.page_size = newSize
@@ -321,25 +258,18 @@ export default {
       this.queryInfo.page =  newPage
       this.getGoodsList()
     },
-    //添加产品
-    addGood() {
-      this.$refs.addFormRef.validate(async valid=>{
-        if (!valid) return
-        const {data:res} = await this.$http.post('/evaluate/add',this.addForm)
-        if (res.status > 0 ) return this.$message.error("添加失败")
-        this.$message.success('添加成功');
-        //隐藏对话框
-        this.addDialogVisible = false
-        //刷新当前页面
-        await this.getGoodsList()
-      })
-    },
     //展示产品编辑框
     async showEditDialog(product_id){
       this.showDialogVisible = true
       const {data:res} = await this.$http.get('/evaluate/product/list',{params: {'product_id':product_id}})
       if (res.status > 0 || res.data.list.length === 0) return this.$message.error("获取产品失败")
       this.editForm = res.data.list[0]
+      if (this.editForm.score === 0){
+        this.editForm.score = null
+      }
+      if (this.editForm.level === 0) {
+        this.editForm.level = null
+      }
       this.editForm.product_count = 0
     },
     //编辑产品
@@ -347,6 +277,7 @@ export default {
       this.$refs.editFormRef.validate(async valid=>{
         if (!valid) return
         this.editForm.product_count = this.product_num
+        console.log(this.editForm.score)
         const {data:res} = await this.$http.post('/evaluate/product/edit',this.editForm)
         if (res.status > 0 ) return this.$message.error("编辑失败")
         //隐藏对话框
@@ -404,7 +335,6 @@ export default {
     handlePreview(file) {
       this.previewPath = file.response.data.file_url
       this.previewVisible = true
-      // console.log(previewPath)
     },
     //图片上传-移除图片
     handleRemove(file) {
@@ -423,7 +353,7 @@ export default {
       if (response.status > 0 ) return this.$message.error("上传失败")
       this.pic.push(response.data.file_url)
       this.addForm.pic = this.pic
-    }
+    },
   }
 }
 </script>
