@@ -24,6 +24,6 @@ app.get('/home', function(req, res) {
   res.send(html)
 })
 //启动web服务器
-app.listen(8090, res => {
-  console.log(chalk.yellow('Start Service On 8090'));
+app.listen(80, res => {
+  console.log(chalk.yellow('Start Service On 80'));
 });
