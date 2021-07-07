@@ -116,7 +116,7 @@
         <el-form-item label="评级级别" prop="level">
           <el-select v-model.number="editForm.level" clearable placeholder="请选择">
             <el-option
-              v-for="item in enumsList[100]" :label="item.enum_name" :value="item.enum_id">
+              v-for="(item,index) in enumsList[100]" :key="index" :label="item.enum_name" :value="item.enum_id">
             </el-option>
           </el-select>
         </el-form-item>
