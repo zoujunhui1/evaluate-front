@@ -91,22 +91,25 @@
           <el-input v-model="editForm.product_version"></el-input>
         </el-form-item>
         <el-form-item label="重量" prop="weight">
-          <el-input v-model.number="editForm.weight">
+          <el-input v-model="editForm.weight">
             <i slot="suffix" style="font-style:normal;margin-right: 10px;">单位/g</i>
           </el-input>
         </el-form-item>
+        <el-form-item label="材质" prop="weight">
+          <el-input v-model="editForm.material"></el-input>
+        </el-form-item>
         <el-form-item label="厚度" prop="thick">
-          <el-input v-model.number="editForm.thick">
+          <el-input v-model="editForm.thick">
             <i slot="suffix" style="font-style:normal;margin-right: 10px;">单位/mm</i>
           </el-input>
         </el-form-item>
         <el-form-item label="直径" prop="diameter">
-          <el-input v-model.number="editForm.diameter">
+          <el-input v-model="editForm.diameter">
             <i slot="suffix" style="font-style:normal;margin-right: 10px;">单位/mm</i>
           </el-input>
         </el-form-item>
         <el-form-item label="评级分数" prop="score">
-          <el-select v-model.number="editForm.score" clearable placeholder="请选择">
+          <el-select v-model="editForm.score" clearable placeholder="请选择">
             <el-option
               v-for="(item, index) in enumsList[200]"
               :key="index" :label="item.enum_name" :value="item.enum_id">
@@ -186,15 +189,16 @@ export default {
         ],
         weight: [
           { required: true, message: '重量', trigger: 'blur' },
-          { type: 'number', message: '只能为数字', trigger: 'blur' }
         ],
         thick: [
           { required: true, message: '厚度', trigger: 'blur' },
-          { type: 'number', message: '只能为数字', trigger: 'blur' }
         ],
         diameter: [
           { required: true, message: '直径', trigger: 'blur' },
-          { type: 'number', message: '只能为数字', trigger: 'blur' }
+        ],
+        material: [
+          { required: true, message: '材料', trigger: 'blur' },
+          { min: 1, max: 10, message: '长度在 1 到 10 个字符', trigger: 'blur' }
         ],
         score: [
           { required: true, message: '长', trigger: 'blur' },
@@ -205,8 +209,8 @@ export default {
           { min: 1, max: 15, message: '长度在 1 到 15 个字符', trigger: 'blur' }
         ],
         desc: [
-          { required: true, message: '背景资料', trigger: 'blur' },
-          { min: 1, max: 50, message: '长度在 1 到 50 个字符', trigger: 'blur' }
+          { required: false, message: '背景资料', trigger: 'blur' },
+          { min: 0, max: 50, message: '长度在 0 到 50 个字符', trigger: 'blur' }
         ],
       },
       //图片上传地址
@@ -286,7 +290,9 @@ export default {
       this.$refs.editFormRef.validate(async valid=>{
         if (!valid) return
         this.editForm.product_count = this.product_num
-        console.log(this.editForm.score)
+        this.editForm.weight = parseFloat(this.editForm.weight)
+        this.editForm.thick = parseFloat(this.editForm.thick)
+        this.editForm.diameter = parseFloat(this.editForm.diameter)
         const {data:res} = await this.$http.post('/evaluate/product/edit',this.editForm)
         if (res.status > 0 ) return this.$message.error("编辑失败")
         //隐藏对话框
