@@ -66,7 +66,6 @@ export default {
         {
           "id":1,
           "auth_name":"产品管理",
-          "path":"goods",
           "children":[
             {
               "id":11,
@@ -77,6 +76,11 @@ export default {
               "id":12,
               "auth_name":"配置列表",
               "path":"config_list",
+            },
+            {
+              "id":13,
+              "auth_name":"批量打印",
+              "path":"batch_print",
             },
           ]
         },

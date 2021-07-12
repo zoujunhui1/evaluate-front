@@ -7,6 +7,11 @@ import ElementUI, {Message, MessageBox} from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import './assets/css/global.css'
 import axios from 'axios'
+import print from 'print-js'
+
+import 'print-js/dist/print.css';
+
+Vue.prototype.$print = print;
 
 Vue.config.productionTip = false
 Vue.use(ElementUI)

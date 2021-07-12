@@ -6,6 +6,7 @@ import Home from "../components/Home";
 import Welcome from "../components/Welcome";
 import GoodsInfo from "../components/GoodsInfo";
 import ConfigList from "../components/ConfigList";
+import Print from "../components/Print";
 
 Vue.use(Router)
 
@@ -35,14 +36,17 @@ const router = new Router({
         {
           path: '/config_list',
           component: ConfigList
+        },
+        {
+          path:'/batch_print',
+          component:Print
         }
       ]
     },
     {
       path:'/product_info',
       component:GoodsInfo
-    }
-
+    },
   ]
 })
 
